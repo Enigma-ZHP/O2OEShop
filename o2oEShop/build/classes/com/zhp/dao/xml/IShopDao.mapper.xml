@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhp.dao.IShopDao">
+	<resultMap type="shop" id="shopResultMap">
+		<id property="sid" column="t_sid"/>
+		<result property="sname" column="t_sname"/>
+		<result property="spassword" column="t_spassword"/>
+		<result property="shopAndcategoryid" column="t_cid"/>
+	</resultMap>
+	<resultMap type="shop" id="shopAndcategoryMap" extends="shopResultMap">
+		<association property="shopAndcategoryid" column="t_cid"></association>
+	</resultMap>
+	<resultMap type="good" id="goodResultMap">
+		<id property="gid" column="t_gid"/>
+		<result property="gname" column="t_gname"/>
+		<result property="gdate" column="t_gdate"/>
+	</resultMap>
+	<insert id="insertShop" parameterType="shop">
+		insert into t_shop(t_sname,t_spassword) values
+		(#{sname},#{spassword})
+	</insert>
+	<update id="updateShop" parameterType="shop">
+		update t_shop set t_sname=#{sname},t_spassword=#{spassword}
+		where t_sid=#{sid}
+	</update>
+	<delete id="deleteShop" parameterType="int">
+		delete from t_shop where t_sid=#{sid}
+	</delete>
+	<select id="selectAllShop" resultMap="shopResultMap">
+		select * from t_shop
+	</select>
+	<select id="selectShopGoodById" parameterType="int" resultMap="goodResultMap">
+		select t_gid,t_gname,t_gdate from t_good where t_sid=#{sid}
+	</select>
+	<select id="selectShopById" parameterType="int" resultMap="shopResultMap">
+		select s.t_sid,s.t_sname,s.t_spassword from t_shop s
+		where s.t_sid=#{sid}
+	</select>
+	<select id="selectShopInfor" parameterType="int" resultMap="shopResultMap">
+		select cs.t_cid,s.t_sid,s.t_sname,s.t_spassword from t_shop s,t_categoryshop cs
+		where s.t_sid=#{sid} and s.t_sid=cs.t_sid 
+	</select>
+	<!--  <resultMap id="selectShopGoodById" type="shop" extends="shopResultMap">
+		<collection property="goodmodel" ofType="good">
+			<id property="gid" column="t_gid"/>
+			<result property="gname" column="t_gname"/>
+			<result property="gdate" column="t_gdate"/>
+			
+		</collection>
+	</resultMap>-->
+	<insert id="insertShopAndCategory" parameterType="shop" useGeneratedKeys="true" keyProperty="sid">
+		<selectKey resultType="java.lang.Integer" keyProperty="sid" order="AFTER" >
+	      SELECT LAST_INSERT_ID()
+	    </selectKey>
+		insert into t_shop(t_sname,t_spassword) values(#{sname},#{spassword});
+	</insert>
+	<insert id="insertToshopcategory" parameterType="shop" >
+		insert into t_categoryshop(t_sid,t_cid) values(#{sid},#{shopAndcategoryid});
+	</insert>
+	<select id="selectMaxsid" resultType="int">
+		select MAX(t_sid) from t_shop
+	</select>
+	
+	
+</mapper>

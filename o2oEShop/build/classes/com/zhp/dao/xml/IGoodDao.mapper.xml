@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhp.dao.IGoodDao">
+	<resultMap type="good" id="goodResultMap">
+		<id property="gid" column="t_gid"/>
+		<result property="sid" column="t_sid"/>
+		<result property="cid" column="t_cid"/>
+		<result property="gname" column="t_gname"/>
+		<result property="gdate" column="t_gdate"/>
+		<result property="gprice" column="t_gprice"/>
+		<result property="gphoto" column="t_gphoto"/>
+	</resultMap>
+
+	<insert id="insertGood" parameterType="good">
+		insert into t_good(t_gname,t_gdate,t_sid) values
+		(#{gname},#{gdate},#{sid})
+	</insert>
+	<update id="updateGoodWithPhoto" parameterType="good">
+		<selectKey resultType="java.lang.Integer" keyProperty="gid" order="AFTER" >
+	      SELECT LAST_INSERT_ID()
+	    </selectKey>
+		update t_good set t_gname=#{gname},t_gdate=#{gdate},t_sid=#{sid},t_gprice=#{gprice},t_gphoto=#{gphoto}
+		where t_gid=#{gid}
+	</update>
+	<update id="updateGoodWithCategory" parameterType="good">
+		update t_categorygood set t_cid=#{cid}
+		where t_gid=#{gid}
+	</update>
+	<delete id="deleteGood" parameterType="int">
+		delete from t_good where t_gid=#{id}
+	</delete>
+	<select id="selectGoodById" parameterType="int" resultMap="goodResultMap">
+		select * from t_good where t_gid=#{gid}
+	</select>
+	<select id="selectAllGood" resultMap="goodResultMap">
+	select g.t_gid,g.t_gname,g.t_gprice,cg.t_cid,cg.t_gid from t_good g LEFT OUTER JOIN t_categorygood cg ON (g.t_gid=cg.t_gid)
+	</select>
+	<insert id="insertGoodWithPhoto" parameterType="good" useGeneratedKeys="true" keyProperty="gid">
+		<selectKey resultType="java.lang.Integer" keyProperty="gid" order="AFTER" >
+	      SELECT LAST_INSERT_ID()
+	    </selectKey>
+		insert into t_good (t_gphoto,t_gname,t_gdate,t_sid,t_gprice)
+		values(#{gphoto},#{gname},#{gdate},#{sid},#{gprice})
+	</insert>
+	<insert id="insertGoodWithCategory" parameterType="good">
+		insert into t_categorygood (t_gid,t_cid) 
+		values(#{gid},#{cid})
+	</insert>
+	<select id="selectGoodListBycid" resultMap="goodResultMap" parameterType="int">
+		select cg.t_gid, g.t_gid, g.t_gname, g.t_gdate, g.t_gphoto, g.t_gprice, cg.t_cid 
+		from t_good g,t_categorygood cg where cg.t_gid=g.t_gid and cg.t_cid=#{cid}
+	</select>
+	<select id="selectGoodListBysid" resultMap="goodResultMap" parameterType="int">
+	select g.t_sid,g.t_gname,g.t_gid,g.t_gphoto,g.t_gprice,cg.t_cid from t_good g,t_categorygood cg 
+	where g.t_sid=#{sid} and g.t_gid=cg.t_gid;
+	</select>
+</mapper>

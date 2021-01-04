@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+<typeAliases>
+	<package name="com.zhp.model"></package>
+</typeAliases>
+
+<environments default="o2o">
+	<environment id="o2o">
+		<transactionManager type="JDBC"/>
+		<dataSource type="POOLED">
+			<property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+			<property name="url" value="jdbc:mysql://localhost:3306/bigwork?serverTimezone=GMT"/>
+			<property name="username" value="root"/>
+			<property name="password" value="zxcvbnm"/>
+		</dataSource>
+		
+	</environment>
+
+	
+</environments>
+<mappers>
+		<!--  <mapper resource="com/zhp/dao/xml/IUserDao.mapper.xml"/>
+		<mapper resource="com/zhp/dao/xml/IShopDao.mapper.xml"/>
+		<mapper resource="com/zhp/dao/xml/IGoodDao.mapper.xml"/>
+		<mapper resource="com/zhp/dao/xml/ICategoryDao.mapper.xml"/>-->
+</mappers>
+</configuration>

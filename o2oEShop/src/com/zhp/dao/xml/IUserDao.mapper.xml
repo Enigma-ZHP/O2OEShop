@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhp.dao.IUserDao">
+	<resultMap id="userResultMap" type="user">
+		<id property="uid" column="t_uid"/>
+		<result property="uname" column="t_uname"/>
+		<result property="uage" column="t_uage"/>
+		<result property="upassword" column="t_upassword"/> 
+	</resultMap>
+	<resultMap type="good" id="goodResultMap">
+		<id property="gid" column="t_gid"/>
+		<result property="cid" column="t_cid"/>
+		<result property="id" column="id"/>
+		<result property="gname" column="t_gname"/>
+		
+		<result property="gprice" column="t_gprice"/>
+		<result property="gphoto" column="t_gphoto"/>
+	</resultMap>
+	<insert id="addUser" parameterType="user" useGeneratedKeys="true" keyProperty="uid">
+		<selectKey resultType="java.lang.Integer" keyProperty="uid" order="AFTER" >
+	      SELECT LAST_INSERT_ID()
+	    </selectKey>
+		insert into t_user (t_uname,t_uage,t_upassword)
+		values(#{uname},#{uage},#{upassword})
+	</insert>
+	<insert id="addwish" parameterType="user" >
+		insert into t_wish (t_uid,t_gid)
+		values(#{uid},#{gid})
+	</insert>
+	<select id="selectwish" parameterType="int" resultMap="goodResultMap">
+		select w.id,g.t_gid,g.t_gname,g.t_gprice,g.t_gphoto from t_good g ,t_wish w 
+		where w.t_gid=g.t_gid and w.t_uid=#{uid}
+	</select>
+	<delete id="deletewish" parameterType="int">
+		delete from t_wish where id=#{id}
+	</delete>
+	<update id="updateUser" parameterType="user">
+		update t_user set
+			t_uname=#{uname},t_uage=#{uage},t_upassword=#{upassword}
+		where t_uid=#{uid}
+	</update>
+	
+	<delete id="deleteUser" parameterType="int">
+		delete from t_user where t_uid=#{uid}
+	</delete>
+	
+	<select id="selectAllUser" resultMap="userResultMap">
+		select * from t_user
+	</select>
+	<select id="selectUserByid" resultMap="userResultMap" parameterType="int">
+		select t_upassword,t_uage,t_uname,t_uid from t_user where t_uid=#{uid}
+	</select>
+	<insert id="addUserWithPhoto" parameterType="user" useGeneratedKeys="true" keyProperty="uid">
+		insert into t_testphoto (t_photo)
+		values(#{uphoto})
+	</insert>
+	
+
+</mapper>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<style type="text/css">
+	body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+	</style>
+	<script type="text/javascript" src="//api.map.baidu.com/api?type=webgl&v=1.0&ak=xepkGUtLdju9XwYxHgt1fUp6l7fAeWf2"></script>
+	
+	<title>设置地图3D视角</title>
+</head>
+<body>
+	<div id="allmap"></div>
+</body>
+<script type="text/javascript" src="assets/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="assets/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="assets/js/owl.carousel.min.js"></script>
+<script type="text/javascript" src="assets/js/wow.min.js"></script>
+<script type="text/javascript" src="assets/js/jquery.actual.min.js"></script>
+<script type="text/javascript" src="assets/js/chosen.jquery.min.js"></script>
+<script type="text/javascript" src="assets/js/jquery.bxslider.min.js"></script>
+<script type="text/javascript" src="assets/js/jquery.sticky.js"></script>
+<script type="text/javascript" src="assets/js/jquery.elevateZoom.min.js"></script>
+<script src="assets/js/fancybox/source/jquery.fancybox.pack.js"></script>
+<script src="assets/js/fancybox/source/helpers/jquery.fancybox-media.js"></script>
+<script src="assets/js/fancybox/source/helpers/jquery.fancybox-thumbs.js"></script>
+<script src='https://maps.googleapis.com/maps/api/js?key=AIzaSyC3nDHy1dARR-Pa_2jjPCjvsOR4bcILYsM'></script>
+<script type="text/javascript" src="assets/js/function.js"></script>
+<script type="text/javascript" src="assets/js/Modernizr.js"></script>
+<script type="text/javascript" src="assets/js/jquery.plugin.js"></script>
+<script type="text/javascript" src="assets/js/jquery.countdown.js"></script>
+<script type="text/javascript">
+    // GL版命名空间为BMapGL
+    // 按住鼠标右键，修改倾斜角和角度
+    $(document).ready(function(){
+    	function showMap(){
+			$.getJSON("https://api.map.baidu.com/location/ip?ak=xepkGUtLdju9XwYxHgt1fUp6l7fAeWf2&coor=bd09ll",function(local){
+    	    	var infor=JSON.stringify(local[content][address]);
+    	    	var pon="http://api.map.baidu.com/place/v2/search?query=购物&region="+infor+"&output=json&ak=xepkGUtLdju9XwYxHgt1fUp6l7fAeWf2";
+        		var pont=$.getJSON(pon,function(point){
+        			var map=new BMapGL.Map("allmap");
+        	    	for(var i=0;i<point[results].length;i++){
+        	    		var lat=point[results][i][location][lat];
+        	    		var lng=point[results][i][location][lng];
+        	    		var dian=new BMapGL.Point(lat,lng);
+            			if(i==0){
+            				map.centerAndZoom(dian,19);
+            				var marker=new BMapGL.Marker(dian);
+            			}else{
+            				var marker=new BMapGL.Marker(dian);
+            			}
+        			}
+        	    	map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+        			map.setHeading(64.5);
+        			map.setTilt(73);
+        		});
+    	    });
+    	}
+	   showMap();
+		
+	)};
+</script>
+</html>
+
