@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhp.dao.ICategoryDao">
+	<resultMap type="category" id="categoryResultMap">
+		<id property="cid" column="t_cid"/>
+		<result property="cname" column="t_cname"/>
+	</resultMap>
+	<resultMap id="selectShopCategory" type="category" extends="categoryResultMap">
+		
+		<collection property="shopmodelList" ofType="shop">
+			<id property="sid" column="t_sid"/>
+			<result property="sname" column="t_sname"/>
+		</collection>
+	</resultMap>
+	<resultMap id="selectGoodCategory" type="category" extends="categoryResultMap">
+		<collection property="goodmodelList" ofType="good">
+			<id property="gid" column="t_gid"/>
+			<result property="gname" column="t_gname"/>
+		</collection>
+	</resultMap>
+	<resultMap type="shop" id="ShopResultMap">
+		<id property="sid" column="t_sid"/>
+		<result property="sname" column="t_sname"></result>
+	</resultMap>
+	<insert id="insertCategory" parameterType="category" useGeneratedKeys="true" keyProperty="cid">
+		insert into t_category (t_cname) 
+		values(#{cname})
+	</insert>
+	<update id="updateCategory" parameterType="category">
+		update t_category set
+		t_cname=#{cname}
+		where t_cid=#{cid}
+	</update>
+	<delete id="deleteCategory">
+		delete from t_category where t_cid=#{cid}
+	</delete>
+	<select id="selectAllCategory" resultType="category">
+		select * from t_category
+	</select>
+	<select id="selectShopCategory" parameterType="int" resultMap="selectShopCategory">
+		select s.t_sname,s.t_sid from t_shop s,t_categoryshop cs where cs.t_sid=s.t_sid and cs.t_cid=#{cid}
+	</select>
+	
+	<select id="selectGoodCategory" parameterType="int" resultMap="selectGoodCategory">
+		select g.t_gname,g.t_gid from t_good g,t_categorygood cg where cg.t_gid=g.t_gid and cg.t_cid=#{cid}
+	</select>
+	<select id="selectShopBycid" parameterType="int" resultMap="ShopResultMap">
+		select s.t_sname,s.t_sid from t_categoryshop cs left join t_shop s on cs.t_sid=s.t_sid and cs.t_cid=#{cid} 
+	</select>
+	
+</mapper>
